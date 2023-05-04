@@ -1,0 +1,224 @@
+$box_length: 30px;
+$item_gap : 0px;
+$N: 19;
+
+.board {
+    display: flex;
+    flex-direction: column;
+    gap: $item_gap;
+    margin: 10px;
+}
+
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+body{
+    transition: 0.5s linear;
+    background-color: rgba(255, 243, 79, 0.75);
+}
+/*chat */
+.chat {
+    width: 100%;
+    max-width: 400px;
+    max-height: $box_length*$N;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    overflow: hidden;
+}
+
+.chat__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.chat__form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.chat__input {
+    flex: 1;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+.btn{
+
+    border: none;
+    background-color: #008080;
+    color: white;
+    cursor: pointer;
+}
+.chat__send {
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+/*message*/
+.system-message {
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.sender-name {
+    font-weight: bold;
+}
+
+.message-time {
+    font-size: 12px;
+    color: #777;
+    margin-top: 5px;
+}
+
+/**/
+main {
+    flex: 1;
+    display: flex;
+}
+
+@media(max-width:1000px) {
+    main {
+        flex-direction: column;
+    }
+}
+
+section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.board__row {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: $item_gap;
+}
+
+.board__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: $box_length;
+    height: $box_length;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.01);
+    //border-radius: $box__length / 10;
+    border: 1px solid rgb(0, 0, 0, 0.01);
+    opacity: 0.85;
+}
+
+.top {
+    background-color: #ffe5e5;
+    /* light pink */
+}
+
+.bottom {
+    background-color: #d4f1e4;
+    /* light green */
+}
+
+.left {
+    background-color: #f3d3ff;
+    /* light purple */
+}
+
+.right {
+    background-color: #ffd6a5;
+    /* light orange */
+}
+
+.main {
+    background-color: #c3e8ff;
+    /* light blue */
+}
+
+.not-main {
+    background-color: #f8e9a1;
+    /* light yellow */
+}
+
+/* Mixes */
+.top.left.main {
+    background-color: #ffc6dc;
+    /* light pink + light purple + light blue */
+}
+
+.top.right.main {
+    background-color: #ffe5b5;
+    /* light pink + light orange + light blue */
+}
+
+.bottom.left.main {
+    background-color: #a8e6cf;
+    /* light green + light purple + light blue */
+}
+
+.bottom.right.main {
+    background-color: #ffc300;
+    /* light green + light orange */
+}
+
+.top.left.not-main {
+    background-color: #e8d98f;
+    /* light pink + light purple + light yellow */
+}
+
+.top.right.not-main {
+    background-color: #fbe5c8;
+    /* light pink + light orange + light yellow */
+}
+
+.bottom.left.not-main {
+    background-color: #f0efdb;
+    /* light green + light purple + light yellow */
+}
+
+.bottom.right.not-main {
+    background-color: #d4af37;
+    /* light green + light orange + light yellow */
+}
+
+.current_position {
+    background-color: rgb(148, 207, 255) !important;
+    background-image:url("/imgs/icons/delapouite/quick-man.svg");
+}
+
+
+/*Player*/
+
+
+.player {
+    border: 2px solid black;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .player__name {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .player__health {
+    margin-bottom: 5px;
+  }
+  
+  .player__attack {
+    margin-bottom: 5px;
+  }
+  
+  .player__defense {
+    margin-bottom: 5px;
+  }
