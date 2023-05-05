@@ -1,6 +1,6 @@
-import { Enemy, Player } from './enemys.js';
+import { Enemy, Player } from './characters.js';
 
-function generate_board(n, board) {//+
+function generate_board(n, board) {
     let counter = 0;
     for (let i = 0; i < n; i++) {
         const divList = document.createElement('div');
@@ -89,7 +89,7 @@ function generate_possible_moves(n) {
 function change_in_game_time(moves) {
     let in_game_time = document.querySelector('.in-game-time');
     if (moves >= 0 && moves <= 4) {
-        document.getElementsByTagName('body')[0].style = 'background-color:rgb(18, 0, 22);'
+        document.getElementsByTagName('body')[0].style = 'background-color: rgba(0,0,0,0.75);'
     }
     if (moves > 4 && moves <= 12) {
         document.getElementsByTagName('body')[0].style = 'background-color: rgba(254, 225, 151, 0.75);'
@@ -97,31 +97,13 @@ function change_in_game_time(moves) {
     if (moves > 12 && moves <= 18) {
         document.getElementsByTagName('body')[0].style = 'background-color: rgba(255, 238, 0, 0.918);'
     }
-    if (moves > 18 && moves <= 24) {
+    if (moves > 18 && moves <= 4) {
         document.getElementsByTagName('body')[0].style = 'background-color: rgba(0,0,0,0.75);'
     }
     in_game_time.textContent = `${moves}/24`
 }
 
-
-let moves_where_made = 5;
-function add_click_handlers(btns, N, possible_moves) {
-    btns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const current_position = document.querySelector('.current_position')
-            add_message_from_system('System', `Possible moves for:${btn.dataset.number} is ${possible_moves[btn.dataset.number].join(', ')}`);
-            if (if_item_close(current_position, btn, possible_moves)) {
-                btn.classList.add('current_position');
-                current_position.classList.remove('current_position');
-                moves_where_made++;
-                if (moves_where_made >= 24) moves_where_made = 0;
-                change_in_game_time(moves_where_made)
-            }
-        });
-    });
-}
-
-function add_message_from_system(sender, message) {
+function add_message_to_chat(sender, message) {
     const messages_list = document.querySelector('.chat__messages');
     const message_item = document.createElement('div');
     message_item.classList.add('message', 'system-message');
@@ -167,12 +149,10 @@ send_button.addEventListener('click', (e) => {
     e.preventDefault();
     const inputElement = document.querySelector(".chat__input");
     const inputValue = inputElement.value;
-    if (inputValue) add_message_from_system("user", inputValue)
+    if (inputValue) add_message_to_chat("user", inputValue)
 })
 
-function add_enemys_to_board() {
 
-}
 function fill_player(player) {
     // Найдем элементы HTML, соответствующие элементам, содержащим информацию о персонаже
     const playerNameElement = document.querySelector('.player__name');
@@ -186,21 +166,96 @@ function fill_player(player) {
     playerAttackElement.textContent = `Attack: ${player.attack}`;
     playerDefenseElement.textContent = `Defense: ${player.defense}`;
 }
-function main() {
-    const N = 30;
-    const board = document.querySelector('.board');
+function move_player_position_on_board(current_position, clicked_position) {
+    clicked_position.classList.add('current_position');
+    current_position.classList.remove('current_position');
+    player.change_position(clicked_position.dataset.number);
+    occupied_items_numbers["player"] = clicked_position.dataset.number;
+    console.log(occupied_items_numbers);
+}
+let moves_where_made = 5;
 
-    generate_board(N, board);
-    add_classes_to_board_elements();
 
-    const btns = document.querySelectorAll(".board__item");
-    btns[0].classList.add('current_position');
-    const possible_moves = generate_possible_moves(N);
-    console.log("possible_moves: ", possible_moves)
-    add_click_handlers(btns, N, possible_moves);
-    const knight_avatar_url = ""
-    const player = new Player('Knight', 100, 20, 10, );
-    fill_player(player);
+
+function handle_item_click(event) {
+    const clicked_position = event.target;
+    // if (clicked_position.classList.contains('board__item')) {}
+    const current_position = document.querySelector('.current_position')
+    const clicked_position_number = clicked_position.dataset.number;
+    add_message_to_chat('System', `Possible moves for:${clicked_position_number} is ${possible_moves[clicked_position_number].join(', ')}`);
+    if (!if_item_close(current_position, clicked_position, possible_moves)) {
+        return;
+    }
+    console.log(occupied_items_numbers["enemies"].includes(clicked_position_number), clicked_position_number)
+    if (occupied_items_numbers["enemies"].includes(parseInt(clicked_position_number)) || occupied_items_numbers["structures"].includes(parseInt(clicked_position_number))) {
+        console.log("item is occupied");
+    }
+    else {
+        move_player_position_on_board(current_position, clicked_position);
+        moves_where_made++;
+        if (moves_where_made >= 24) moves_where_made = 0;
+        change_in_game_time(moves_where_made)
+    }
+
+
 }
 
-main();
+function set_start_position(position_number, btns) {
+    if (position_number <= 0) position_number = 1;
+    btns[position_number - 1].classList.add('current_position');
+    player.change_position(position_number + 1);
+    occupied_items_numbers["player"] = position_number;
+}
+
+function rd(min, max) {
+    let rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
+}
+
+function generate_random_numbers(N, x) {
+    const randomNumbers = [];
+    let cnt = 0;
+    while (randomNumbers.length != x) {
+        let number = rd(N, N * N);
+        if (!randomNumbers.includes(number) && !occupied_items_numbers['enemies'].includes(number)) {
+            randomNumbers.push(number);
+        }
+        cnt++;
+    }
+    console.log("cnt: ", cnt);
+    return randomNumbers;
+}
+
+function add_enemies_to_board(board_items, enemies, enemies_number) {
+    const indexes_for_enemies = generate_random_numbers(N, enemies_number);
+    
+    indexes_for_enemies.forEach(index => {
+        board_items[index-1].style.backgroundImage = "url('" + enemies.avatar_path + "')";
+    })
+    occupied_items_numbers["enemies"].push.apply(occupied_items_numbers["enemies"],indexes_for_enemies);
+}
+
+const N = 30;
+
+let occupied_items_numbers = {
+    "player": 0,
+    "enemies": [],
+    "structures": [],
+}
+
+const board = document.querySelector('.board');
+
+const player = new Player('Knight', 100, 20, 10,);
+fill_player(player);
+generate_board(N, board);
+add_classes_to_board_elements();
+
+const board_items = document.querySelectorAll(".board__item");
+set_start_position(1, board_items);
+const possible_moves = generate_possible_moves(N);
+board.addEventListener('click', handle_item_click);
+const knight_avatar_url = "";
+
+const goblin = new Enemy("Goblin", 50, 5, 3, "../imgs/goblin-head.svg");
+add_enemies_to_board(board_items, goblin, 60)
+add_enemies_to_board(board_items, goblin, 60)
