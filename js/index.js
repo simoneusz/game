@@ -2,9 +2,8 @@ import { Enemy, Player } from "./characters.js";
 import * as Board from "./ui/board.js";
 
 /*
-
 TODO:
-    Из описания персонажа убрать ненужные поля
+    Из описания персонажа убрать ненужные поля + 
 
 */
 
@@ -215,3 +214,9 @@ console.log(define_enemy("Orc"))
 add_enemies_to_board(board_items, define_enemy("Orc"), 10);
 add_enemies_to_board(board_items, define_enemy("Goblin"), 10);
 add_enemies_to_board(board_items, define_enemy("Bat"), 10);
+console.log(board_items)
+for (const enemy in occupied_items_numbers.enemies) {
+    occupied_items_numbers.enemies[enemy].forEach((enemy_pos)=>{
+        board_items[enemy_pos].textContent = enemy;
+    })
+}
