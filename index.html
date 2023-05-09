@@ -1,45 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style/reset.css">
-        <link rel="stylesheet" href="style/style.css">
-        <title>Game
-        </title>
-    </head>
-    <body>
-        <div class="wrapper">
-            <main>
-                <section>
-                    <div class="in-game-time"></div>
-                    <div class="board">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/style.css">
+    <title>Game</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <main class="main">
+        <section>
+          <div class="in-game-time"></div>
+          <div class="board">
+            <div class="chat">
+              <div class="chat__messages"></div>
+              </form>
+            </div>
+            
+          </div>
+        </section>
+        <aside class="aside">
+          <div class="navbar">
+            <ul class="navbar__list">
+              <button class="navbar__item">Stats</button>
+              <button class="navbar__item">Map</button>
+              <button class="navbar__item">Skills</button>
+              <button class="navbar__item">Logs</button>
+            </ul>
+          </div>
+          <div class="aside__content">
+            <div class="player" id="player1"></div>
+          </div>
+        </aside>
 
-                    </div>
-                </section>
-                <section>
-                    <div class="chat">
-                        <div class="chat__messages">
-
-                        </div>
-                        <form class="chat__form">
-                            <input class="chat__input" type="text"
-                                placeholder="Type your message...">
-                            <button class="chat__send btn">Send</button>
-                        </form>
-                        <button class="chat__clear btn">Clear</button>
-                    </div>
-                    <div class="player" id="player1">
-                        <div class="player__name" id="player1-name"></div>
-                        <div class="player__health" id="player1-health"></div>
-                        <div class="player__attack" id="player1-attack"></div>
-                        <div class="player__defense" id="player1-defense"></div>
-                    </div>
-                </section>
-            </main>
-        </div>
-        <script type="module" src="js/index.js"></script>
-    </body>
-
+      </main>
+      
+    </div>
+    <script type="module" src="./js/index.js"></script>
+  </body>
 </html>

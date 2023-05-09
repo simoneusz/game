@@ -1,29 +1,33 @@
 $box_length: 30px;
-$item_gap : 0px;
+$map_item_lenght: 50px;
+$item_gap: 0px;
 $N: 19;
 
 .board {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: $item_gap;
-    margin: 10px;
 }
-
 
 .wrapper {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
 }
-body{
+body {
     transition: 0.5s linear;
     background-color: rgba(255, 243, 79, 0.75);
 }
 /*chat */
 .chat {
+    position: absolute;
+    bottom: 0;
     width: 100%;
     max-width: 400px;
-    max-height: $box_length*$N;
+    max-height: 300px;
     display: flex;
     flex-direction: column;
     border: 2px solid black;
@@ -50,8 +54,7 @@ body{
     border-radius: 5px;
     border: none;
 }
-.btn{
-
+.btn {
     border: none;
     background-color: #008080;
     color: white;
@@ -83,11 +86,12 @@ body{
 
 /**/
 main {
-    flex: 1;
     display: flex;
+    flex: 1;
+    gap: 30px;
 }
 
-@media(max-width:1000px) {
+@media (max-width: 1000px) {
     main {
         flex-direction: column;
     }
@@ -119,6 +123,59 @@ section {
     border: 1px solid rgb(0, 0, 0, 0.01);
     opacity: 0.85;
 }
+.current_position {
+    background: rgb(148, 207, 255);
+    background-repeat: no-repeat;
+    background-image: url("/imgs/Knight.svg");
+    background-position: center top;
+    background-size: 25px 25px;
+}
+
+.aside {
+    max-width: 900px;
+    min-width: 600px;
+}
+.navbar {
+    display: flex;
+}
+.navbar__list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex: 1;
+}
+.navbar__item {
+    border-radius: 12px 12px 0px 0px;
+    border: none;
+    margin: 10px 0px 0px 0px;
+    padding: 0px 20px;
+    background-color: rgb(49, 49, 49);
+    color: #fff;
+}
+
+/*MAP*/
+
+.map {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+.map__row {
+    display: flex;
+}
+.map__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: $map_item_lenght;
+    height: $map_item_lenght;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.01);
+    //border-radius: $box__length / 10;
+    border: 1px solid rgb(0, 0, 0, 0.1);
+    opacity: 0.85;
+}
 
 .top {
     background-color: #ffe5e5;
@@ -140,7 +197,7 @@ section {
     /* light orange */
 }
 
-.main {
+.main-d {
     background-color: #c3e8ff;
     /* light blue */
 }
@@ -191,34 +248,70 @@ section {
     /* light green + light orange + light yellow */
 }
 
-.current_position {
-    background-color: rgb(148, 207, 255) !important;
-    background-image:url("/imgs/Knight.svg");
-}
-
-
 /*Player*/
 
-
 .player {
-    border: 2px solid black;
+    background-color: #121212;
+    color: #e8e8e8;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 20px;
+    border: 2px solid #1d1d1d;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    text-shadow: 0px 0px 2px #000000;
+}
+
+.player__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.player__info-item {
+    margin: 10px;
     padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .player__name {
+    background-color: #1d1d1d;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+.health__container,
+.level__container {
+    display: flex;
+    align-items: center;
+}
+
+.bar {
+    flex: 1;
+
+}
+
+// progress::-webkit-progress-value{
+
+//     background-color: #d32f2f;
+// }
+// .player__health-bar::-webkit-progress-value,
+// .player__level-bar::-webkit-progress-value {
+//   background-color: #d32f2f;
+//   border-radius: 5px;
+// }
+
+// .player__health-bar::-webkit-progress-value,
+// .player__level-bar::-webkit-progress-value {
+//     background-color: #d32f2f;
+//     border-radius: 5px;
+// }
+
+.player__health,
+.player__level {
     font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .player__health {
-    margin-bottom: 5px;
-  }
-  
-  .player__attack {
-    margin-bottom: 5px;
-  }
-  
-  .player__defense {
-    margin-bottom: 5px;
-  }
+    text-transform: uppercase;
+}
+
+.player__enemies-killed {
+    font-size: 20px;
+    margin-top: 20px;
+    text-align: center;
+    text-shadow: none;
+}
