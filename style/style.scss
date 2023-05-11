@@ -8,6 +8,9 @@ $N: 19;
     display: flex;
     flex-direction: column;
     gap: $item_gap;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    text-shadow: 0px 0px 2px #000000;
 }
 
 .wrapper {
@@ -116,12 +119,20 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     width: $box_length;
     height: $box_length;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.01);
     //border-radius: $box__length / 10;
     border: 1px solid rgb(0, 0, 0, 0.01);
-    opacity: 0.85;
+}
+.board__item:focus {
+    background-color: #008080;
+}
+.board__item-text {
+    position: absolute;
+    top: -25%;
+    z-index: 5;
 }
 .current_position {
     background: rgb(148, 207, 255);
@@ -134,6 +145,17 @@ section {
 .aside {
     max-width: 900px;
     min-width: 600px;
+}
+.aside__content{
+    background-color: #121212;
+    color: #e8e8e8;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 20px;
+    border: 2px solid #1d1d1d;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    text-shadow: 0px 0px 2px #000000;
 }
 .navbar {
     display: flex;
@@ -148,9 +170,10 @@ section {
     border-radius: 12px 12px 0px 0px;
     border: none;
     margin: 10px 0px 0px 0px;
-    padding: 0px 20px;
     background-color: rgb(49, 49, 49);
     color: #fff;
+    padding: 0px 30px;
+    box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 75%);
 }
 
 /*MAP*/
@@ -160,7 +183,6 @@ section {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
 }
 .map__row {
     display: flex;
@@ -175,6 +197,85 @@ section {
     //border-radius: $box__length / 10;
     border: 1px solid rgb(0, 0, 0, 0.1);
     opacity: 0.85;
+}
+
+/*INVENTORY*/
+
+.inventory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.inventory__container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.inventory__container > div{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+.inventory__top {
+
+}
+.item-slot {
+    border: 1px solid rgb(49, 49, 49);
+    background-color: rgb(66, 66, 66);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.top__helmet{
+}
+
+.inventory__center {
+}
+.top__weapon-1 {
+}
+.weapon {
+    height: 150px;
+    margin-top: -80px;
+}
+.top__ring-1 {
+}
+.ring, .amulet {
+    width: 50px;
+    height: 50px;
+}
+.ring {
+
+}
+.top__chest {
+}
+.jewelry-center-top {
+
+}
+.top__ring-2 {
+}
+.top__amulet {
+}
+.top__weapon-2 {
+}
+.inventory__bottom {
+    display: flex;
+    justify-content: center;
+}
+.top__gloves {
+}
+.gloves {
+}
+.top__belt {
+}
+.belt {
+    height: 50px;
+    
+}
+.top__boots {
+}
+.boots {
 }
 
 .top {
@@ -251,16 +352,7 @@ section {
 /*Player*/
 
 .player {
-    background-color: #121212;
-    color: #e8e8e8;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.4;
-    padding: 20px;
-    border: 2px solid #1d1d1d;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
-    text-shadow: 0px 0px 2px #000000;
+
 }
 
 .player__info {
@@ -284,24 +376,24 @@ section {
 
 .bar {
     flex: 1;
-
 }
 
-// progress::-webkit-progress-value{
+.bar::-webkit-progress-value {
+    background-color: #d32f2f;
+    border-radius: 5px;
+}
 
-//     background-color: #d32f2f;
-// }
-// .player__health-bar::-webkit-progress-value,
-// .player__level-bar::-webkit-progress-value {
-//   background-color: #d32f2f;
-//   border-radius: 5px;
-// }
+progress {
+    -webkit-appearance: none;
+}
+::-webkit-progress-bar {
+    border-radius: 5px;
+}
 
-// .player__health-bar::-webkit-progress-value,
-// .player__level-bar::-webkit-progress-value {
-//     background-color: #d32f2f;
-//     border-radius: 5px;
-// }
+.player__level-bar::-webkit-progress-value {
+    background-color: #2f7bd3;
+    border-radius: 5px;
+}
 
 .player__health,
 .player__level {

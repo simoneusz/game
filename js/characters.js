@@ -1,3 +1,5 @@
+import * as Items from "./items.js";
+
 class Enemy {
     constructor(name, health, attack, defense, avatar_path, xp_gain, level) {
         this.name = name;
@@ -31,6 +33,25 @@ class Player {
             attack: 2,
             defense: 1,
         };
+        this.items = {
+            equipped_items: {
+                head:null,
+                body:null,
+                gloves:null,
+                boots:null,
+                belt:null,
+                weapon: {
+                    main_hand:null,
+                    off_hand:null
+                },
+                jewelry:{
+                    first_ring:null,
+                    second_ring:null,
+                    amulet:null,
+                },
+            },
+            bag:null,
+        }
     }
 
     change_position(new_position) {
