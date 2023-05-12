@@ -1,8 +1,17 @@
 class Item {
-    constructor(name, type) {
+    constructor(name, type, rarity) {
         this.name = name;
         this.type = type;
     }
+
+    static rarity_types = {
+        common: { name: "Обычный", color: "#E0E0E0" },
+        uncommon: { name: "Необычный", color: "#77DD77" },
+        rare: { name: "Редкий", color: "#6495ED" },
+        epic: { name: "Эпический", color: "#9370DB" },
+        legendary: { name: "Легендарный", color: "#FFB347" },
+        mythic: { name: "Мифический", color: "#FF6961" },
+    };
 }
 
 class Armor extends Item {

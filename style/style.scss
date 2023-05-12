@@ -221,12 +221,20 @@ section {
 }
 .item-slot {
     border: 1px solid rgb(49, 49, 49);
+    position: relative;
     background-color: rgb(66, 66, 66);
     width: 100px;
     height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.item-slot:hover > .equipment__descriprion{
+    display: block;
+}
+.item-slot > .equipment__descriprion{
+    position: absolute;
+    left: 50%;
 }
 .top__helmet{
 }
@@ -406,4 +414,34 @@ progress {
     margin-top: 20px;
     text-align: center;
     text-shadow: none;
+}
+
+/*ITEM DESCTIPRION ON HOVER*/
+
+.equipment__descriprion {
+    display: none;
+    position: absolute;
+    left: 50%;
+    z-index: 5;
+}
+.item {
+    background-color: #121212;
+    color: #e8e8e8;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 20px;
+    border: 2px solid #1d1d1d;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    text-shadow: 0px 0px 2px #000000;
+}
+.item__name {
+}
+.item__stats {
+}
+.item__stat {
+}
+.item__description {
+}
+.description__content {
 }

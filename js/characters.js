@@ -35,27 +35,72 @@ class Player {
         };
         this.items = {
             equipped_items: {
-                head:null,
-                body:null,
-                gloves:null,
-                boots:null,
-                belt:null,
+                helmet: null,
+                chest: null,
+                gloves: null,
+                boots: null,
+                belt: null,
                 weapon: {
-                    main_hand:null,
-                    off_hand:null
+                    main_hand: null,
+                    off_hand: null,
                 },
-                jewelry:{
-                    first_ring:null,
-                    second_ring:null,
-                    amulet:null,
+                jewelry: {
+                    first_ring: null,
+                    second_ring: null,
+                    amulet: null,
                 },
             },
-            bag:null,
-        }
+            bag: null,
+        };
     }
 
-    change_position(new_position) {
-        this.position = new_position;
+    get_equipped_items() {
+        const result = [];
+        const equipped_items = this.items.equipped_items;
+        const traverse = (equipped_items) => {
+            let obj = equipped_items;
+            if (obj instanceof Items.Weapon || obj instanceof Items.Armor) {
+                result.push(obj);
+            } else if (typeof obj === "object" && obj !== null) {
+                for (let key in obj) {
+                    traverse(obj[key]);
+                }
+            }
+        };
+
+        traverse(this.items);
+
+        return result;
+    }
+
+    equip_items(items) {
+        this.items.equipped_items.helmet =
+            items.find((item) => item.type === "helmet") || null;
+        this.items.equipped_items.chest =
+            items.find((item) => item.type === "chest") || null;
+        this.items.equipped_items.gloves =
+            items.find((item) => item.type === "gloves") || null;
+        this.items.equipped_items.boots =
+            items.find((item) => item.type === "boots") || null;
+        this.items.equipped_items.weapon.main_hand =
+            items.find((item) => item.type === "main_hand") || null;
+        this.items.equipped_items.weapon.off_hand =
+            items.find((item) => item.type === "off_hand") || null;
+        this.items.equipped_items.jewelry.first_ring =
+            items.find((item) => item.type === "first_ring") || null;
+        this.items.equipped_items.jewelry.second_ring =
+            items.find((item) => item.type === "second_ring") || null;
+        this.items.equipped_items.jewelry.amulet =
+            items.find((item) => item.type === "amulet") || null;
+    }
+
+    items_to_string() {
+        const jsonString = JSON.stringify(this.items);
+        const fields = jsonString
+            .match(/"([^"{}]+)":/g)
+            .map((match) => match.replace(/"/g, "").replace(/:$/, ""));
+
+        return fields;
     }
 
     define_xp_for_level_up(level) {

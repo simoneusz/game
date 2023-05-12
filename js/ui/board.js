@@ -1,3 +1,5 @@
+import * as Items from "/js/items.js";
+
 function generate_board(n, board) {
     for (let i = 0; i < n; i++) {
         const divList = document.createElement("div");
@@ -186,7 +188,7 @@ function fill_aside(button, player) {
             on_logs_click_handler();
             break;
         case "Inventory":
-            fill_inventory();
+            fill_inventory(player);
             break;
         default:
             console.log("Unknown button clicked");
@@ -196,8 +198,70 @@ function fill_aside(button, player) {
 function add_content_to_aside() {
     const aside_content = document.querySelector(".aside__content");
 }
+function add_items_description(items) {
+    // items = player.get_equipped_items()
 
-function fill_inventory() {
+    const description_template = `
+    <div class="equipment__descriprion">
+        <div class="item">
+            <h3 class="item__name"></h3>
+            <div class="item__stats">
+                <p class="item__stat"></p>
+                <p class="item__stat"></p>
+                <p class="item__stat"></p>
+                <p class="item__stat">Lorem ipsum dolor sit amet.</p>
+            </div>
+            <div class="item__description">
+                <p class="description__content"></p>
+            </div>
+        </div>
+    </div>
+    `;
+
+    for (const equiped_item in items) {
+        const item_slot = document.querySelector(
+            `[data-equipment-type*="${items[equiped_item].type}"]`
+        );
+        const equipment_descriprion = document.createElement("div");
+        equipment_descriprion.classList.add("equipment__descriprion");
+
+        const item_div = document.createElement("div");
+        item_div.classList.add("item");
+
+        const item_name = document.createElement("h3");
+        item_name.classList.add("item__name");
+
+        item_name.textContent = items[equiped_item].name;
+        item_name.style = `color: ${
+            Items.Weapon.rarity_types[`${items[equiped_item].rarity}`].color
+        };`;
+
+        const items_stats = document.createElement("div");
+        items_stats.classList.add("items__stats");
+        for (const stat in items[equiped_item].stats) {
+            const item_stat = document.createElement("p");
+            item_stat.classList.add("item__stat");
+            item_stat.textContent = `${stat}: ${items[equiped_item].stats[stat]}`;
+            items_stats.appendChild(item_stat);
+        }
+
+        item_div.appendChild(item_name);
+        item_div.appendChild(items_stats);
+
+        const item_description = document.createElement("div");
+        item_description.classList.add("item__description");
+
+        const description_content = document.createElement("p");
+        description_content.classList.add("description__content");
+        description_content.textContent = "lorem lorem";
+
+        item_description.appendChild(description_content);
+        item_div.appendChild(item_description);
+        equipment_descriprion.appendChild(item_div);
+        item_slot.appendChild(equipment_descriprion);
+    }
+}
+function fill_inventory(player) {
     const inventory_template = `
         <div class="inventory__container">
             <div class="inventory__top">
@@ -231,22 +295,33 @@ function fill_inventory() {
 
     const items_slots = document.querySelectorAll(".item-slot");
     function handle_item_mouseover(e) {
-        console.log("this is ", e);
-        const tooltip = document.createElement("div");
-        tooltip.classList.add("tooltip");
-        tooltip.innerHTML = `this is item 4 sure`;
-        document.body.appendChild(tooltip);
+        console.log(e);
     }
+
+    function handle_item_mouseout(e) {}
     items_slots.forEach((item_slot) => {
         item_slot.addEventListener("mouseover", handle_item_mouseover);
+        item_slot.addEventListener("mouseout", handle_item_mouseout);
     });
+
+    console.log(player);
+    add_player_items_to_inventory(player.get_equipped_items());
+    add_items_description(player.get_equipped_items());
 }
-function add_starter_items_to_inventory(items){
-    items.forEach(item => {
-        const img = document.createElement("img")
-        img.src = item.image;
-        document.body.appendChild(img)
-    })
+
+function add_player_items_to_inventory(items) {
+    for (const item in items) {
+        const img = document.createElement("img");
+        img.src = items[item].image;
+
+        const item_slot = document.querySelector(
+            `[data-equipment-type*="${items[item].type}"]`
+        );
+        if (item_slot === null) continue;
+        item_slot.innerHTML = "";
+        item_slot.appendChild(img);
+        console.log(items[item]);
+    }
 }
 function fill_map() {
     const aside_content = document.querySelector(".aside__content");
@@ -401,5 +476,5 @@ export {
     add_message_to_chat,
     fill_aside,
     fill_player_stats,
-    add_starter_items_to_inventory
+    add_player_items_to_inventory as add_starter_items_to_inventory,
 };

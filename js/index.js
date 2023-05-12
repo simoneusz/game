@@ -17,6 +17,9 @@ TODO:
         золото, деревья, руда
     квесты? сюжет?
     случайные встречи
+
+
+    !!Доделать описание при наведении на предмет
 */
 
 function if_item_close(current_position, clicked_item, possible_moves) {
@@ -118,7 +121,7 @@ function handle_item_click(event) {
         Board.change_in_game_time(moves_where_made);
     }
     console.log(occupied_items_numbers);
-    console.log(player)
+    console.log(player);
 }
 
 function set_start_position(position_number, btns) {
@@ -183,7 +186,7 @@ let enemies_default_data = {
         health: 15,
         damage: 2,
         defense: 1,
-        avatar: "/imgs/bat.svg",
+        avatar: "imgs/bat.svg",
         xp_gain: [0, 3],
         level: rd,
     },
@@ -192,7 +195,7 @@ let enemies_default_data = {
         health: 30,
         damage: 5,
         defense: 3,
-        avatar: "/imgs/goblin-head.svg",
+        avatar: "imgs/goblin-head.svg",
         xp_gain: [3, 5],
         level: 3,
     },
@@ -201,7 +204,7 @@ let enemies_default_data = {
         health: 45,
         damage: 6,
         defense: 3,
-        avatar: "/imgs/orc-head.svg",
+        avatar: "imgs/orc-head.svg",
         xp_gain: [4, 6],
         level: 5,
     },
@@ -243,7 +246,7 @@ add_enemies_to_board(board_items, define_enemy("Bat"), 10);
 
 add_text_to_enemies(board_items, occupied_items_numbers);
 
-
+console.log(player.items_to_string());
 
 /*ITEMS*/
 
@@ -260,10 +263,9 @@ const sword = new Items.Weapon(
         armor_penetration: 10,
     },
     1, // requirementLevel
-    "Common", // rarity
+    "common", // rarity
     "", // specialEffects
-    "/imgs/items/sword.svg", // image
-
+    "imgs/items/sword.svg" // image
 );
 const shield = new Items.Weapon(
     "Wooden Shield",
@@ -278,9 +280,9 @@ const shield = new Items.Weapon(
         armor_penetration: 10,
     },
     1, // requirementLevel
-    "Common", // rarity
+    "uncommon", // rarity
     "", // specialEffects
-    "/imgs/items/shield.svg" // image
+    "imgs/items/shield.svg" // image
 );
 
 const helmet = new Items.Armor(
@@ -295,9 +297,9 @@ const helmet = new Items.Armor(
         health_regeneration_bonus: 1,
     },
     1, // requirementLevel
-    "Common", // rarity
+    "rare", // rarity
     "", // specialEffects
-    "/imgs/items/helmet.svg" // image
+    "imgs/items/helmet.svg" // image
 );
 const chest = new Items.Armor(
     "Leather chestplate",
@@ -311,9 +313,9 @@ const chest = new Items.Armor(
         health_regeneration_bonus: 1,
     },
     1, // requirementLevel
-    "Common", // rarity
+    "epic", // rarity
     "", // specialEffects
-    "/imgs/items/chest.svg" // image
+    "imgs/items/chest.svg" // image
 );
 const gloves = new Items.Armor(
     "Leather gloves",
@@ -327,9 +329,9 @@ const gloves = new Items.Armor(
         health_regeneration_bonus: 1,
     },
     1, // requirementLevel
-    "Common", // rarity
+    "legendary", // rarity
     "", // specialEffects
-    "/imgs/items/gloves.svg" // image
+    "imgs/items/gloves.svg" // image
 );
 const boots = new Items.Armor(
     "Leather boots",
@@ -343,17 +345,14 @@ const boots = new Items.Armor(
         health_regeneration_bonus: 1,
     },
     1, // requirementLevel
-    "Common", // rarity
+    "mythic", // rarity
     "", // specialEffects
-    "/imgs/items/boots.svg" // image
+    "imgs/items/boots.svg" // image
 );
-
-
-
-
+console.log(player);
 
 const starter_items = [sword, shield, helmet, chest, gloves, boots];
-Board.add_starter_items_to_inventory(starter_items)
-starter_items.forEach( item =>{
-    console.log(item)
-})
+player.equip_items(starter_items);
+
+console.log(player.get_equipped_items());
+console.log(Items.Weapon.rarity_types)
