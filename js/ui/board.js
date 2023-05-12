@@ -1,4 +1,4 @@
-import * as Items from "/js/items.js";
+import * as Items from "../items.js";
 
 function generate_board(n, board) {
     for (let i = 0; i < n; i++) {
