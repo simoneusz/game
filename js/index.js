@@ -1,6 +1,6 @@
-import { Enemy, Player } from "game/js/characters.js";
-import Board from "game/js/ui/board.js";
-import * as Items from "game/js/items.js";
+import { Enemy, Player } from "/game/js/characters.js";
+import Board from "/game/js/ui/board.js";
+import * as Items from "/game/js/items.js";
 
 /*
 TODO:
