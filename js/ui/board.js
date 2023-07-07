@@ -1,4 +1,4 @@
-import * as Items from "/game/js/items.js";
+import * as Items from "../items.js";
 
 class Board {
     constructor(side_length, board_element) {
