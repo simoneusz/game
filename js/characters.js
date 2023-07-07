@@ -1,4 +1,4 @@
-import * as Items from "./items.js";
+import * as Items from "/game/js/items.js";
 
 class Enemy {
     constructor(name, health, attack, defense, avatar_path, xp_gain, level) {
