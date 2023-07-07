@@ -1,6 +1,6 @@
-import { Enemy, Player } from "./characters.js";
-import * as Board from "./ui/board.js";
-import * as Items from "./items.js";
+import { Enemy, Player } from "/js/characters.js";
+import Board from "/js/ui/board.js";
+import * as Items from "/js/items.js";
 
 /*
 TODO:
@@ -20,7 +20,51 @@ TODO:
 
 
     !!Доделать описание при наведении на предмет
+
+    возможно использовать onMouseUp
+    Управление на wasd и стрелик при помощи on_key_down
+
+    в board_positions добавлять только занятые позиции
 */
+
+function on_mouse_up(e) {
+    const activeTextarea = document.activeElement;
+}
+function on_key_down(e) {
+    if(e.key !== "F12") e.preventDefault();
+    const current_position = document.querySelector(".current_position");
+
+    var playerPosition = parseInt(current_position.dataset.number); // Получаем текущую позицию игрока
+
+    // Получаем код нажатой клавиши
+    var key = e.key || e.keyCode;
+    // Передвижение игрока в зависимости от нажатой клавиши
+    if(player.is_moving) return;
+    player.is_moving = true;
+    if (key === "ц" || key === "w" || key === "ArrowUp") {
+        let element = document.querySelector(
+            `[data-number="${playerPosition - N}"]`
+        );
+        move_player_position_on_board(current_position, element); // Передвижение вверх
+        player.is_moving = false;
+    } else if (key === "ы" || key === "s" || key === "ArrowDown") {
+        let element = document.querySelector(
+            `[data-number="${playerPosition + N}"]`
+        );
+        move_player_position_on_board(current_position, element); // Передвижение вниз
+    } else if (key === "ф" || key === "a" || key === "ArrowLeft") {
+        let element = document.querySelector(
+            `[data-number="${playerPosition - 1}"]`
+        );
+        move_player_position_on_board(current_position, element); // Передвижение влево
+    } else if (key === "в" || key === "d" || key === "ArrowRight") {
+        let element = document.querySelector(
+            `[data-number="${playerPosition + 1}"]`
+        );
+        move_player_position_on_board(current_position, element); // Передвижение вправо
+    }
+    player.is_moving = false;
+}
 
 function if_item_close(current_position, clicked_item, possible_moves) {
     return possible_moves[current_position.dataset.number].includes(
@@ -30,41 +74,50 @@ function if_item_close(current_position, clicked_item, possible_moves) {
 
 let moves_where_made = 5;
 
-function start_fight(player, enemy) {
+async function start_fight(player, enemy, clicked_position) {
     function attack_oponent(attacker, defender) {
         defender.stats.health -= attacker.stats.attack;
+        //console.log(`${attacker.name}(${attacker.stats.health}) dealt ${attacker.stats.attack} damage to ${defender.name}(${defender.stats.health}).`);
         return defender;
     }
-    console.log(player);
-    while (player.stats.health > 0 && enemy.stats.health > 0) {
-        enemy = attack_oponent(player, enemy);
-        if (player.stats.health <= 0) break;
-        Board.add_message_to_chat(
-            "System",
-            `${player.name}[${player.stats.health}] attacked ${enemy.name}[${enemy.stats.health}] for ${player.stats.attack} health`
-        );
-        console.log(
-            `${player.name}[${player.stats.health}] attacked ${enemy.name}[${enemy.stats.health}] for ${player.stats.attack} health`
-        );
-        player = attack_oponent(enemy, player);
-        if (enemy.stats.health <= 0) break;
-        Board.add_message_to_chat(
-            "System",
-            `${enemy.name}[${enemy.stats.health}] attacked ${player.name}[${player.stats.health}] for ${enemy.stats.attack} health`
-        );
-        console.log(
-            `${enemy.name}[${enemy.stats.health}] attacked ${player.name}[${player.stats.health}] for ${enemy.stats.attack} health`
-        );
-    }
-    if (player.stats.health > 0) {
-        Board.add_message_to_chat("System", `${enemy.name} has been defeated.`);
-        player.stats.enemies_killed++;
-        player.receive_xp_from_enemy(enemy);
-    } else Board.add_message_to_chat("System", `You are dead`);
 
-    if (player.max_health - player.stats.health >= 10)
-        player.stats.health += 10;
-    Board.fill_player_stats(player);
+    async function perform_attack(attacker, defender) {
+        return new Promise(resolve => {
+            setTimeout(async () => {
+                defender = attack_oponent(attacker, defender);
+                if (defender.stats.health <= 0) {
+                    resolve([attacker, defender]);
+                } else {
+                    resolve(await perform_attack(defender, attacker));
+                }
+            }, 10);
+        });
+    }
+
+    function end_battle(winner, loser) {
+        if (winner === player) {
+            player_board.add_message_to_chat(
+                "System",
+                `${enemy.name} has been defeated.`
+            );
+            player.stats.enemies_killed++;
+            player.receive_xp_from_enemy(enemy);
+            clicked_position.innerHTML = "";
+            let clicked_position_number = clicked_position.dataset.number;
+            player_board.board_positions[clicked_position_number].occupied_by = "";
+        } else {
+            player_board.add_message_to_chat("System", "You are dead");
+        }
+
+        if (player.max_health - player.stats.health >= 10) {
+            player.stats.health += 10;
+        }
+        player_board.fill_player_stats(player);
+    }
+
+    // Start the battle
+    const [winner, loser] = await perform_attack(player, enemy);
+    end_battle(winner, loser);
 }
 
 function define_enemy(enemy_name) {
@@ -78,10 +131,36 @@ function define_enemy(enemy_name) {
 }
 
 function move_player_position_on_board(current_position, clicked_position) {
+    // if (!if_item_close(current_position, clicked_position, possible_moves)) {
+    //     return;
+    // }
+    const clicked_position_number = parseInt(clicked_position.dataset.number);
+    if (current_position === clicked_position) return;
+    
+    let clicked_position_is_enemy = false;
+    let enemy_name = "";
+    let occupied_by =
+        player_board.board_positions[clicked_position_number].occupied_by;
+    try {
+        if (occupied_by instanceof Enemy) {
+            enemy_name =
+                player_board.board_positions[clicked_position_number]
+                    .occupied_by.name;
+            clicked_position_is_enemy = true;
+        }
+    } catch (TypeError) {}
+
+    if (clicked_position_is_enemy) {
+        start_fight(player, define_enemy(enemy_name), clicked_position);
+    }
     clicked_position.classList.add("current_position");
     current_position.classList.remove("current_position");
+
     player.position = clicked_position.dataset.number;
-    Board.fill_player_stats(player);
+
+    player_board.fill_player_stats(player);
+
+    occupied_by = player;
     occupied_items_numbers["player"] = clicked_position.dataset.number;
 }
 
@@ -89,46 +168,20 @@ function handle_item_click(event) {
     const clicked_position = event.target;
     // if (clicked_position.classList.contains('board__item')) {}
     const current_position = document.querySelector(".current_position");
-    const clicked_position_number = clicked_position.dataset.number;
     //add_message_to_chat('System', `Possible moves for:${clicked_position_number} is ${possible_moves[clicked_position_number].join(', ')}`);
-    if (!if_item_close(current_position, clicked_position, possible_moves)) {
-        return;
-    }
 
-    let clicked_position_is_enemy = false;
-    let enemy_name = "";
-    for (let enemy in occupied_items_numbers["enemies"]) {
-        if (
-            occupied_items_numbers["enemies"][enemy].indexOf(
-                parseInt(clicked_position_number)
-            ) >= 0
-        ) {
-            clicked_position_is_enemy = true;
-            enemy_name = enemy;
-        }
-    }
-
-    if (clicked_position_is_enemy) {
-        Board.add_message_to_chat(
-            "System",
-            `this position is occupied by ${enemy_name}`
-        );
-        start_fight(player, define_enemy(enemy_name));
-    } else {
-        move_player_position_on_board(current_position, clicked_position);
-        moves_where_made++;
-        if (moves_where_made >= 24) moves_where_made = 0;
-        Board.change_in_game_time(moves_where_made);
-    }
-    console.log(occupied_items_numbers);
-    console.log(player);
+    move_player_position_on_board(current_position, clicked_position);
 }
 
 function set_start_position(position_number, btns) {
     if (position_number <= 0) position_number = 1;
     btns[position_number - 1].classList.add("current_position");
     player.position = position_number + 1;
-    Board.fill_player_stats(player);
+    player_board.board_positions[position_number] = {
+        occupied_by: player,
+        html_element: btns[position_number - 1],
+    };
+    player_board.fill_player_stats(player);
     occupied_items_numbers["player"] = position_number;
 }
 
@@ -137,33 +190,35 @@ function rd(min, max) {
     return Math.round(rand);
 }
 
-function generate_random_numbers(N, x) {
-    const randomNumbers = [];
-    let cnt = 0;
-    while (randomNumbers.length != x) {
-        let number = rd(N, N * N);
-        if (
-            !randomNumbers.includes(number) &&
-            !occupied_items_numbers["enemies"].includes(number)
-        ) {
-            randomNumbers.push(number);
-        }
-        cnt++;
-    }
-    return randomNumbers;
+function get_random_position_for_enemy(possible_positions) {
+    return possible_positions[
+        Math.floor(Math.random() * possible_positions.length)
+    ];
 }
 
 function add_enemies_to_board(board_items, enemies, enemies_number) {
-    const indexes_for_enemies = generate_random_numbers(N, enemies_number);
-    if (
-        occupied_items_numbers["enemies"].length +
-            occupied_items_numbers["structures"] >=
-        N * N - 1
-    )
-        return;
+    const free_positions = player_board.get_free_positions();
+    const occupied_positions_number = player_board.get_occupied_positions();
+    const indexes_for_enemies = [];
+    for (let i = 0; i < enemies_number; i++) {
+        let random_position = get_random_position_for_enemy(free_positions);
+        indexes_for_enemies.push(random_position);
+        player_board.board_positions[random_position].occupied_by = enemies;
+    }
+    if (occupied_positions_number + enemies_number >= N * N - 1)
+        add_enemies_to_board(
+            board_items,
+            enemies,
+            occupied_positions_number + enemies_number - (N * N - 1)
+        );
+
     indexes_for_enemies.forEach((index) => {
-        board_items[index - 1].style.backgroundImage =
-            "url('" + enemies.avatar_path + "')";
+        const template = `
+        <svg viewBox="0 0 30 30" style="width: 100%; height: 100%;">
+            <image href="${enemies.avatar_path}" xlink:href="${enemies.avatar_path}" width="30" height="30" />
+        </svg>
+        `;
+        board_items[index - 1].innerHTML = template;
     });
 
     if (occupied_items_numbers["enemies"][enemies.name] === undefined)
@@ -188,7 +243,7 @@ let enemies_default_data = {
         defense: 1,
         avatar: "imgs/bat.svg",
         xp_gain: [0, 3],
-        level: rd,
+        level: rd(1, 2),
     },
     Goblin: {
         name: "Goblin",
@@ -197,62 +252,54 @@ let enemies_default_data = {
         defense: 3,
         avatar: "imgs/goblin-head.svg",
         xp_gain: [3, 5],
-        level: 3,
+        level: rd(3, 4),
     },
     Orc: {
         name: "Orc",
         health: 45,
-        damage: 6,
+        damage: 10,
         defense: 3,
         avatar: "imgs/orc-head.svg",
         xp_gain: [4, 6],
-        level: 5,
+        level: rd(4, 5),
     },
 };
 
-function add_text_to_enemies(board_items, occupied_items_numbers) {
-    for (const enemy in occupied_items_numbers.enemies) {
-        occupied_items_numbers.enemies[enemy].forEach((enemy_pos) => {
+function add_text_to_enemies(positions) {
+    for (let enemy in positions) {
+        if (positions[enemy].occupied_by instanceof Enemy) {
             const enemy_text = document.createElement("p");
-            enemy_text.classList.add("board__item-text");
-            enemy_text.textContent = enemy;
+            enemy_text.classList.add("board__item-name");
+            enemy_text.textContent = positions[enemy].occupied_by.name;
 
-            board_items[enemy_pos - 1].appendChild(enemy_text);
-        });
+            board_items[enemy - 1].appendChild(enemy_text);
+
+            const enemy_level = document.createElement("p");
+            enemy_level.classList.add("board__item-level");
+            enemy_level.textContent = positions[enemy].occupied_by.level;
+            board_items[enemy - 1].appendChild(enemy_level);
+        }
     }
 }
 
 const aside_nav_bts = document.querySelectorAll(".navbar__item");
 aside_nav_bts.forEach((button) => {
-    button.addEventListener("click", () => Board.fill_aside(button, player));
+    button.addEventListener("click", () =>
+        player_board.fill_aside(button, player)
+    );
 });
 
-const board = document.querySelector(".board");
-
-const player = new Player("Knight", 100, 20, 10, 0, 1);
-const N = 30;
-Board.generate_board(N, board);
-Board.add_classes_to_board_elements();
-
-const board_items = document.querySelectorAll(".board__item");
-set_start_position(1, board_items);
-const possible_moves = Board.generate_possible_moves(N);
-board.addEventListener("click", handle_item_click);
-const knight_avatar_url = "";
-
-add_enemies_to_board(board_items, define_enemy("Orc"), 10);
-add_enemies_to_board(board_items, define_enemy("Goblin"), 10);
-add_enemies_to_board(board_items, define_enemy("Bat"), 10);
-
-add_text_to_enemies(board_items, occupied_items_numbers);
-
-console.log(player.items_to_string());
-
-/*ITEMS*/
+const aside2_nav_bts = document.querySelectorAll(".navbar2__item");
+aside2_nav_bts.forEach((button) => {
+    button.addEventListener("click", () =>
+        player_board.fill2_aside(button, player)
+    );
+});
 
 const sword = new Items.Weapon(
     "Wooden Sword",
     "main_hand",
+    "weapon",
     {
         attack_damage: 50,
         critical_strike_chance: 0.1,
@@ -270,6 +317,7 @@ const sword = new Items.Weapon(
 const shield = new Items.Weapon(
     "Wooden Shield",
     "off_hand",
+    "weapon",
     {
         attack_damage: 50,
         critical_strike_chance: 0.1,
@@ -288,6 +336,7 @@ const shield = new Items.Weapon(
 const helmet = new Items.Armor(
     "Leather helmet",
     "helmet",
+    "armour",
     {
         defense: 1,
         physical_defense: 1,
@@ -304,6 +353,7 @@ const helmet = new Items.Armor(
 const chest = new Items.Armor(
     "Leather chestplate",
     "chest",
+    "armour",
     {
         defense: 1,
         physical_defense: 1,
@@ -320,6 +370,7 @@ const chest = new Items.Armor(
 const gloves = new Items.Armor(
     "Leather gloves",
     "gloves",
+    "armour",
     {
         defense: 1,
         physical_defense: 1,
@@ -336,6 +387,7 @@ const gloves = new Items.Armor(
 const boots = new Items.Armor(
     "Leather boots",
     "boots",
+    "armour",
     {
         defense: 1,
         physical_defense: 1,
@@ -349,10 +401,111 @@ const boots = new Items.Armor(
     "", // specialEffects
     "imgs/items/boots.svg" // image
 );
-console.log(player);
 
-const starter_items = [sword, shield, helmet, chest, gloves, boots];
-player.equip_items(starter_items);
+const starter_items = {
+    weapon: {
+        main_hand: sword,
+        off_hand: shield,
+    },
+    jewelry: {
+        first_ring: null,
+        second_ring: null,
+        amulet: null,
+    },
+    helmet: helmet,
+    chest: chest,
+    gloves: gloves,
+    boots: boots,
+    belt: null,
+};
+const starter_knight_stats = {
+    health: 100,
+    attack: 20,
+    defense: 10,
+    level: 1,
+    current_xp: 0,
+    enemies_killed: 0,
+};
 
-console.log(player.get_equipped_items());
-console.log(Items.Weapon.rarity_types)
+// const player = new Player("Knight", 100, 20, 10, 0, 1);
+let player = new Player("Knight", starter_knight_stats, starter_items, 0);
+
+const fields = Object.getOwnPropertyNames(player);
+
+for (const field of fields) {
+    if (player.hasOwnProperty(field)) {
+    }
+}
+
+window.addEventListener("load", (event) => {
+    let playerJSON;
+    try {
+        playerJSON = localStorage.getItem("player");
+        const playerData = JSON.parse(playerJSON);
+
+        let { name, stats, items, position } = playerData;
+        items = items.equipped_items;
+        player = new Player(name, stats, items, position);
+        player_board.fill_player_stats(player);
+    } catch (e) {
+        console.log(e);
+    }
+});
+const board = document.querySelector(".board");
+
+const N = 30;
+const box_length = 30;
+
+const player_board = new Board(N, board);
+
+//player_board.add_classes_to_board_elements();
+const board_items = document.querySelectorAll(".board__item");
+set_start_position(parseInt(player.position), board_items);
+const possible_moves = player_board.possible_moves;
+for (const key in board_items) {
+    if (Object.hasOwnProperty.call(board_items, key)) {
+        const element = board_items[key];
+        element.addEventListener("click", handle_item_click);
+    }
+}
+
+board.addEventListener("mouseup", on_mouse_up, false);
+board.addEventListener("keydown", on_key_down);
+
+const knight_avatar_url = "";
+add_enemies_to_board(board_items, define_enemy("Orc"), N * N * 0.05);
+add_enemies_to_board(board_items, define_enemy("Bat"), 30);
+add_enemies_to_board(board_items, define_enemy("Goblin"), N * N * 0.05);
+
+let number_of_enemies = player_board.get_occupied_positions().length;
+
+// add_enemies_to_board(board_items, define_enemy("Goblin"), 30);
+// add_enemies_to_board(board_items, define_enemy("Bat"), 30);
+
+add_text_to_enemies(player_board.board_positions);
+
+const test = occupied_items_numbers["enemies"]["Orc"];
+const bats_positions = occupied_items_numbers["enemies"]["Bat"];
+const goblins_positions = occupied_items_numbers["enemies"]["Goblin"];
+// тестировка занятости позиций
+// for (const row in test) {
+// }
+
+/*ITEMS*/
+
+// player.equip_items(starter_items);
+if (document.addEventListener) {
+    document.addEventListener(
+        "contextmenu",
+        function (e) {
+            alert("You've tried to open context menu"); //here you draw your own menu
+            e.preventDefault();
+        },
+        false
+    );
+} else {
+    document.attachEvent("oncontextmenu", function () {
+        alert("You've tried to open context menu");
+        window.event.returnValue = false;
+    });
+}

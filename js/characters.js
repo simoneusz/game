@@ -12,22 +12,23 @@ class Enemy {
         this.avatar_path = avatar_path;
         this.xp_gain = xp_gain;
         this.level = level;
+        this.is_moving = false;
     }
 }
 
 class Player {
-    constructor(name, health, attack, defense, enemies_killed, level) {
+    constructor(name, stats, items, position) {
         this.name = name;
-        this.stats = {
-            health: health,
-            attack: attack,
-            defense: defense,
-            level: level,
-            current_xp: 0,
-            enemies_killed: enemies_killed,
+        this.stats = { 
+            health: stats.health,
+            attack: stats.attack,
+            defense: stats.defense,
+            level: stats.level,
+            current_xp: stats.current_xp,
+            enemies_killed: stats.enemies_killed,
         };
-        this.max_health = health;
-        this.position = 1;
+        this.max_health = stats.health;
+        this.position = position;
         this.gains_for_level_up = {
             max_health: 5,
             attack: 2,
@@ -35,19 +36,19 @@ class Player {
         };
         this.items = {
             equipped_items: {
-                helmet: null,
-                chest: null,
-                gloves: null,
-                boots: null,
-                belt: null,
+                helmet: items.helmet,
+                chest: items.chest,
+                gloves: items.gloves,
+                boots: items.boots,
+                belt: items.belt,
                 weapon: {
-                    main_hand: null,
-                    off_hand: null,
+                    main_hand: items.weapon.main_hand,
+                    off_hand: items.weapon.off_hand,
                 },
                 jewelry: {
-                    first_ring: null,
-                    second_ring: null,
-                    amulet: null,
+                    first_ring: items.jewelry.first_ring,
+                    second_ring: items.jewelry.second_ring,
+                    amulet: items.jewelry.amulet,
                 },
             },
             bag: null,
@@ -103,7 +104,7 @@ class Player {
         return fields;
     }
 
-    define_xp_for_level_up(level) {
+    define_xp_for_level(level) {
         let xp_for_level_up = 0;
         if (level >= 0 && level <= 16) xp_for_level_up = level ** 2 + 6 * level;
         if (level >= 17 && level <= 31)
@@ -121,14 +122,14 @@ class Player {
         this.stats.defense += this.gains_for_level_up.defense;
     }
     check_if_level_up() {
-        let xp_for_level_up = this.define_xp_for_level_up(this.stats.level);
+        let xp_for_level_up = this.define_xp_for_level(this.stats.level);
         while (
             this.stats.current_xp > xp_for_level_up ||
             this.stats.current_xp == xp_for_level_up
         ) {
             this.stats.current_xp -= xp_for_level_up;
             this.on_level_up();
-            xp_for_level_up = this.define_xp_for_level_up(this.stats.level);
+            xp_for_level_up = this.define_xp_for_level(this.stats.level);
         }
     }
     receive_xp_from_enemy(enemy) {

@@ -1,7 +1,8 @@
 class Item {
-    constructor(name, type, rarity) {
+    constructor(name, type, item_type, rarity) {
         this.name = name;
         this.type = type;
+        this.item_type = item_type;
     }
 
     static rarity_types = {
@@ -18,13 +19,14 @@ class Armor extends Item {
     constructor(
         name,
         type,
+        item_type,
         stats,
         requirement_level,
         rarity,
         special_effects,
         image
     ) {
-        super(name, type);
+        super(name, type, item_type,);
         this.stats = stats;
         this.requirementLevel = requirement_level;
         this.rarity = rarity;
@@ -39,13 +41,14 @@ class Weapon extends Item {
     constructor(
         name,
         type,
+        item_type,
         stats,
         requirement_level,
         rarity,
         special_effects,
         image
     ) {
-        super(name, type);
+        super(name, type,item_type);
         this.stats = stats;
         this.requirementLevel = requirement_level;
         this.rarity = rarity;
@@ -63,7 +66,6 @@ class Weapon extends Item {
 //     ],
 //     // Другие наборы предметов...
 // };
-
 const armor_stats = {
     defense: 1,
     physical_defense: 1,

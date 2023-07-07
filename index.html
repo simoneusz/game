@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/reset.css">
     <link rel="stylesheet" href="style/style.css">
+    <!-- <link rel="stylesheet" href="style/sides_colors.css"> -->
     <title>Game</title>
   </head>
   <body>
@@ -13,13 +14,12 @@
 
       <main class="main">
         <section>
-          <div class="in-game-time"></div>
-          <div class="board">
-            <div class="chat">
-              <div class="chat__messages"></div>
-              </form>
-            </div>
-            
+          <div class="board-stats">
+            <div class="killed-emenies"></div>
+            <div class="enemies-left"></div>
+          </div>
+          <div class="board invert-items"><!-- invert-items -->
+
           </div>
         </section>
         <aside class="aside">
@@ -33,13 +33,33 @@
             </ul>
           </div>
           <div class="aside__content">
-            
+
+          </div>
+
+          <div class="navbar2">
+            <ul class="navbar2__list">
+              <button class="navbar2__item">Settings</button>
+              <button class="navbar2__item">Map</button>
+              <button class="navbar2__item">Skills</button>
+              <button class="navbar2__item">Inventory</button>
+              <button class="navbar2__item">Logs</button>
+            </ul>
+          </div>
+          <div class="aside2__content">
+
           </div>
         </aside>
-
       </main>
-      
+
     </div>
     <script type="module" src="./js/index.js"></script>
   </body>
 </html>
+
+<div class="settings">
+  <div class="settings__container">
+    <ul class="settings__list">
+      <li class="settings__item"></li>
+    </ul>
+  </div>
+</div>

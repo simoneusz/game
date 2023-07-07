@@ -1,0 +1,71 @@
+
+.top {
+    background-color: #ffe5e5;
+    /* light pink */
+}
+
+.bottom {
+    background-color: #d4f1e4;
+    /* light green */
+}
+
+.left {
+    background-color: #f3d3ff;
+    /* light purple */
+}
+
+.right {
+    background-color: #ffd6a5;
+    /* light orange */
+}
+
+.main-d {
+    background-color: #c3e8ff;
+    /* light blue */
+}
+
+.not-main {
+    background-color: #f8e9a1;
+    /* light yellow */
+}
+
+/* Mixes */
+.top.left.main {
+    background-color: #ffc6dc;
+    /* light pink + light purple + light blue */
+}
+
+.top.right.main {
+    background-color: #ffe5b5;
+    /* light pink + light orange + light blue */
+}
+
+.bottom.left.main {
+    background-color: #a8e6cf;
+    /* light green + light purple + light blue */
+}
+
+.bottom.right.main {
+    background-color: #ffc300;
+    /* light green + light orange */
+}
+
+.top.left.not-main {
+    background-color: #e8d98f;
+    /* light pink + light purple + light yellow */
+}
+
+.top.right.not-main {
+    background-color: #fbe5c8;
+    /* light pink + light orange + light yellow */
+}
+
+.bottom.left.not-main {
+    background-color: #f0efdb;
+    /* light green + light purple + light yellow */
+}
+
+.bottom.right.not-main {
+    background-color: #d4af37;
+    /* light green + light orange + light yellow */
+}

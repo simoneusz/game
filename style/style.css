@@ -1,11 +1,19 @@
 .board {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0px;
-  border-radius: 5px;
+  gap: -1px;
+  background-color: #1d1d1d;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
   text-shadow: 0px 0px 2px #000000;
+}
+
+.invert-items .board__row .board__item svg {
+  filter: invert(100%);
 }
 
 .wrapper {
@@ -18,7 +26,7 @@
 
 body {
   transition: 0.5s linear;
-  background-color: rgba(255, 243, 79, 0.75);
+  background-image: url("../imgs/bg-brick.png");
 }
 
 /*chat */
@@ -31,13 +39,18 @@ body {
   display: flex;
   flex-direction: column;
   border: 2px solid black;
-  overflow: hidden;
+  opacity: 0.7;
+}
+
+.chat::-webkit-scrollbar {
+  width: 0;
 }
 
 .chat__messages {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
+  overflow: hidden;
 }
 
 .chat__form {
@@ -110,28 +123,57 @@ section {
   position: relative;
   display: flex;
   flex-direction: row;
-  gap: 0px;
+  gap: -1px;
 }
 
 .board__item {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   width: 30px;
   height: 30px;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.01);
+  box-shadow: inset 0 0 0.75px rgb(0, 0, 0);
+  background: transparent;
   border: 1px solid rgba(0, 0, 0, 0.01);
+  border: none;
 }
 
 .board__item:focus {
-  background-color: #008080;
+  outline: none;
 }
 
-.board__item-text {
+.board__item svg {
+  pointer-events: none;
+}
+
+.board__item[style] {
+  color: #e8e8e8;
+}
+
+.board__item-name {
+  pointer-events: none;
   position: absolute;
+  color: #fff;
   top: -25%;
   z-index: 5;
+}
+
+.board__item-level {
+  background-color: #121212;
+  opacity: 0.7;
+  border-radius: 50%;
+  font-size: 16px;
+  padding: 1px;
+  position: absolute;
+  color: #fff;
+  bottom: 0;
+  left: 5%;
+  pointer-events: none;
 }
 
 .current_position {
@@ -147,7 +189,7 @@ section {
   min-width: 600px;
 }
 
-.aside__content {
+.aside__content, .aside2__content {
   background-color: #121212;
   color: #e8e8e8;
   font-family: Arial, sans-serif;
@@ -159,18 +201,18 @@ section {
   text-shadow: 0px 0px 2px #000000;
 }
 
-.navbar {
+.navbar, .navbar2 {
   display: flex;
 }
 
-.navbar__list {
+.navbar__list, .navbar2__list {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   flex: 1;
 }
 
-.navbar__item {
+.navbar__item, .navbar2__item {
   border-radius: 12px 12px 0px 0px;
   border: none;
   margin: 10px 0px 0px 0px;
@@ -247,7 +289,8 @@ section {
   margin-top: -80px;
 }
 
-.ring, .amulet {
+.ring,
+.amulet {
   width: 50px;
   height: 50px;
 }
@@ -261,84 +304,13 @@ section {
   height: 50px;
 }
 
-.top {
-  background-color: #ffe5e5;
-  /* light pink */
-}
-
-.bottom {
-  background-color: #d4f1e4;
-  /* light green */
-}
-
-.left {
-  background-color: #f3d3ff;
-  /* light purple */
-}
-
-.right {
-  background-color: #ffd6a5;
-  /* light orange */
-}
-
-.main-d {
-  background-color: #c3e8ff;
-  /* light blue */
-}
-
-.not-main {
-  background-color: #f8e9a1;
-  /* light yellow */
-}
-
-/* Mixes */
-.top.left.main {
-  background-color: #ffc6dc;
-  /* light pink + light purple + light blue */
-}
-
-.top.right.main {
-  background-color: #ffe5b5;
-  /* light pink + light orange + light blue */
-}
-
-.bottom.left.main {
-  background-color: #a8e6cf;
-  /* light green + light purple + light blue */
-}
-
-.bottom.right.main {
-  background-color: #ffc300;
-  /* light green + light orange */
-}
-
-.top.left.not-main {
-  background-color: #e8d98f;
-  /* light pink + light purple + light yellow */
-}
-
-.top.right.not-main {
-  background-color: #fbe5c8;
-  /* light pink + light orange + light yellow */
-}
-
-.bottom.left.not-main {
-  background-color: #f0efdb;
-  /* light green + light purple + light yellow */
-}
-
-.bottom.right.not-main {
-  background-color: #d4af37;
-  /* light green + light orange + light yellow */
-}
-
 /*Player*/
 .player__info {
   display: flex;
   flex-direction: column;
 }
 
-.player__info-item {
+.player__info-item, .settings__item {
   margin: 10px;
   padding: 10px;
   background-color: #1d1d1d;
@@ -406,4 +378,82 @@ progress {
   border-radius: 5px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
   text-shadow: 0px 0px 2px #000000;
+}
+
+/*LOGS*/
+.logs__messages {
+  max-height: 570px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+/* width */
+.logs__messages::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.logs__messages::-webkit-scrollbar-track {
+  background: #1d1d1d;
+}
+
+/* Handle */
+.logs__messages::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+.logs__messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.message__item {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  padding: 10px;
+  background-color: #1d1d1d;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.message__body {
+  display: flex;
+  gap: 5px;
+}
+
+.message__sender {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.message__time {
+  align-self: flex-end;
+}
+
+.settings__item-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 5px;
+}
+
+.settings__item-name {
+  font-size: 20px;
+}
+
+.settings__item-description {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.settings__btn {
+  background-color: #121212;
+  border: 1px solid #000;
+  border-radius: 12px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  font-size: 16px;
+  padding: 5px 15px;
 }/*# sourceMappingURL=style.css.map */
